@@ -197,7 +197,7 @@ BezierCurve.prototype.drawTask1 = function()
     setColors(this.ctx,'green','green');
     split.right.drawControlPoints();
     
-    // Draw some random stuff
+    // Draw the parameter value.
     drawText(this.ctx, this.nodes[0].x - 20,
                        this.nodes[0].y + 20,
                          "t = " + this.tParameter);
