@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Computer Graphics - Assignment 3</title>
+
+    <link href="resources/bootstrap.min.css" rel="stylesheet">
+    <link href="resources/custom2016.css" rel="stylesheet">
+    
+    <!-- Load all the scripts related to the assignment -->
+    <script src="resources/drawutils.js"></script>
+    <script src="resources/node.js"></script>
+    <script src="resources/beziercurve.js"></script>
+    <script src="resources/catmullromspline.js"></script>
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body onload="setupAssignment();">
+    <div class="container headerBar">
+        <h1>Programming Assignment 4 - Name Here</h1>
+    </div>
+    <div class="container contentWrapper">
+        <div class="pageContent">
+            <!-- ================================================================= -->
+
+            <h2>Task 1</h2>
+
+            <p>TODO: report problems, comments... </p>
+            
+            <div class="canvas-container">
+                <canvas id="task-1" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task1Curve.setShowControlPolygon(this.checked);" id="task1CboxNodes" /> Show control polygon
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label id="Task1ParameterLabel">Parameter 't':</label>
+                    </div>
+                    <div class="form-group">
+                        <input id="task1Slider1" type ="range" min ="0.0" max="1.0" step ="0.01" value = "0.5" oninput="task1Curve.setT(this.value); printValue('task1Slider1','task1RangeValue1')"/>
+                    </div>
+                    <div class="form-group">
+                        <input id="task1RangeValue1" type="text" size="4" value = "0.5" readonly/>
+                    </div>
+                </form>
+                <button onclick="clearCurve(1);">Clear Canvas</button>
+            </div>
+
+            <!-- ================================================================= -->
+
+            <h2>Task 2</h2>
+            
+            <p>TODO: report problems, comments... </p>
+            
+            <div class="canvas-container">
+                <canvas id="task-2" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task2Curve.setShowControlPolygon(this.checked);" id="task2CboxNodes" /> Show control polygon
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label id="Task2ParameterLabel">Depth :</label>
+                    </div>
+                    <div class="form-group">
+                        <input id="task2Slider1" type ="range" min ="0" max="6" step ="1" value = "3" oninput="task2Curve.setDepth(this.value); printValue('task2Slider1','task2RangeValue1')"/>
+                    </div>
+                    <div class="form-group">
+                        <input id="task2RangeValue1" type="text" size="4" value = "3" readonly/>
+                    </div>
+                </form>
+                
+                <button onclick="clearCurve(2);">Clear Canvas</button>
+            </div>
+            
+
+            <!-- ================================================================= -->
+            
+            <h2>Task 3 (Grad Students Only)</h2>
+            
+            <p>TODO: report problems, comments... </p>
+            
+            <div class="canvas-container">
+                <canvas id="task-3" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task3Curve.setShowControlPolygon(this.checked);" id="task3CboxNodes1" /> Show control polygon
+                <input type="checkbox" checked="true" onchange="task3Curve.showAdaptiveSubdivision(this.checked);" id="task3CboxNodes2" /> Show adaptive subdivision
+                <button onclick="clearCurve(3);">Clear Canvas</button>
+            </div>
+
+            <!-- ================================================================= -->
+
+            <h2>Task 4</h2>
+
+            <p>TODO: report problems, comments... </p>
+            
+            <div class="canvas-container">
+                <canvas id="task-4" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task4Curve.setShowTangents(this.checked);" id="task4CboxNodes1" /> Show Tangents
+                <button onclick="clearCurve(4);">Clear Canvas</button>
+            </div>
+            
+            <!-- ================================================================= -->
+            
+            <h2>Task 5</h2>
+
+            <p>TODO: report problems, comments... </p>
+            
+            <div class="canvas-container">
+                <canvas id="task-5" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task5Curve.setShowControlPolygon(this.checked);" id="task5CboxNodes1" /> Show Control Polygon
+                <input type="checkbox" checked="true" onchange="task5Curve.setShowTangents(this.checked);" id="task5CboxNodes2" /> Show Tangents
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label id="Task5ParameterLabel">Tension 's':</label>
+                    </div>
+                    <div class="form-group">
+                        <input id="task5Slider1" type ="range" min ="0.0" max="1.0" step ="0.01" value = "0.5" oninput="task5Curve.setTension(this.value); printValue('task5Slider1','task5RangeValue1')"/>
+                    </div>
+                    <div class="form-group">
+                        <input id="task5RangeValue1" type="text" size="4" value = "0.5" readonly/>
+                    </div>
+                </form>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label id="Task5ParameterLabe2">Segments :</label>
+                    </div>
+                    <div class="form-group">
+                        <input id="task5Slider2" type ="range" min ="1" max="32" step ="1" value = "8" oninput="task5Curve.setNumSegments(this.value); printValue('task5Slider2','task5RangeValue2')"/>
+                    </div>
+                    <div class="form-group">
+                        <input id="task5RangeValue2" type="text" size="4" value = "8" readonly/>
+                    </div>
+                </form>
+                <button onclick="clearCurve(5);">Clear Canvas</button>
+            </div>
+            
+        </div>
+    </div>
+    <script>
+    
+        var task1Curve = null;
+        var task2Curve = null;
+        var task3Curve = null;
+        var task4Curve = null;
+        var task5Curve = null;
+        
+        function setupAssignment() {
+            
+            // Set up the curves
+            task1Curve = new BezierCurve("task-1");
+            task2Curve = new BezierCurve("task-2");
+            task3Curve = new BezierCurve("task-3");
+            task4Curve = new CatmullRomSpline("task-4");
+            task5Curve = new CatmullRomSpline("task-5");
+            
+            // Call the draw function
+            draw();
+        }
+        
+        function draw() {
+            
+            task1Curve.drawTask1();
+            task2Curve.drawTask2();
+            task3Curve.drawTask3();
+            task4Curve.drawTask4();
+            task5Curve.drawTask5();
+            
+            requestAnimFrame(function() {
+                draw();
+            });
+        }
+        
+        function clearCurve(canvasId) {
+            if(canvasId == 1)
+                task1Curve = new BezierCurve("task-1");
+            else if(canvasId == 2)
+                task2Curve = new BezierCurve("task-2");
+            else if(canvasId == 3)
+                task3Curve = new BezierCurve("task-3");
+            else if(canvasId == 4)
+                task4Curve = new CatmullRomSpline("task-4");
+            else if(canvasId == 5)
+                task5Curve = new CatmullRomSpline("task-5");
+        }
+        
+        window.requestAnimFrame = (function(callback) {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function(callback) {
+                window.setTimeout(callback, 1000 / 30);
+            };
+        })();
+        
+        function printValue(sliderID, textbox) {
+            var x = document.getElementById(textbox);
+            var y = document.getElementById(sliderID);
+            x.value = y.value;
+        }
+        
+    </script>
+</body>
+</html>
