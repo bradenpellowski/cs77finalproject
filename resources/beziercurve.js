@@ -4,8 +4,9 @@ var BezierCurve = function(canvasId, ctx)
     // Setup all the data related to the actual curve.
     this.nodes = new Array();
     this.showControlPolygon = true;
-    this.showAdaptiveSubdivision = false;
-    this.tParameter = 0.5;
+    this.showAdaptiveSubdivision = true;
+    this.showSubEnds = true;
+    this.tParameter = 0;
     this.tDepth = 2;
     
     // Set up all the data related to drawing the curve
@@ -29,21 +30,21 @@ var BezierCurve = function(canvasId, ctx)
     // Event listeners
     this.dCanvas.addEventListener('resize', this.computeCanvasSize());
     
-    this.dCanvas.addEventListener('mousedown', function(event) {
-        that.mousePress(event);
-    });
+    // this.dCanvas.addEventListener('mousedown', function(event) {
+    //     that.mousePress(event);
+    // });
     
-    this.dCanvas.addEventListener('mousemove', function(event) {
-        that.mouseMove(event);
-    });
+    // this.dCanvas.addEventListener('mousemove', function(event) {
+    //     that.mouseMove(event);
+    // });
     
-    this.dCanvas.addEventListener('mouseup', function(event) {
-        that.mouseRelease(event);
-    });
+    // this.dCanvas.addEventListener('mouseup', function(event) {
+    //     that.mouseRelease(event);
+    // });
     
-    this.dCanvas.addEventListener('mouseleave', function(event) {
-        that.mouseRelease(event);
-    });
+    // this.dCanvas.addEventListener('mouseleave', function(event) {
+    //     that.mouseRelease(event);
+    // });
 }
 
 // Mutator methods.
@@ -65,6 +66,11 @@ BezierCurve.prototype.setShowControlPolygon = function(bShow)
 BezierCurve.prototype.setShowAdaptiveSubdivision = function(bShow)
 {
     this.showAdaptiveSubdivision = bShow;
+}
+
+BezierCurve.prototype.setShowSubEnds = function(bShow)
+{
+    this.showSubEnds = bShow;
 }
 
 // Event handlers for the canvas associated with the curve.
@@ -138,12 +144,70 @@ BezierCurve.prototype.deCasteljauSplit = function(t)
 
     if (this.nodes.length == 3)
     {
+
+        left.nodes.push(this.nodes[0]);
+
+        right.nodes.push(this.nodes[2]);
+
+        var a = new Node;
+        a.lerp(this.nodes[0],this.nodes[1],t);
+        
+
+        left.nodes.push(a);
+
+        var b = new Node;
+        b.lerp(this.nodes[1],this.nodes[2],t);
+
+        right.nodes.push(b);
+
+        var c = new Node;
+        c.lerp(a,b,t);
+
+        left.nodes.push(c);
+        right.nodes.push(c);
         // degree 2 bezier curve
         // split the segments about 't'
         // Hint : use lerp()
     }
     else if (this.nodes.length == 4)
     {    
+
+        left.nodes.push(this.nodes[0]);
+
+        right.nodes.push(this.nodes[3]);
+
+        var l2 = new Node;
+        l2.lerp(this.nodes[0],this.nodes[1],t);
+        
+
+        left.nodes.push(l2);
+
+        var H = new Node;
+        H.lerp(this.nodes[1],this.nodes[2],t);
+
+
+        var l3 = new Node;
+        l3.lerp(l2,H,t);
+        left.nodes.push(l3);
+
+
+
+
+        var r3 = new Node;
+        r3.lerp(this.nodes[3],this.nodes[2],t);
+        right.nodes.push(r3);
+
+        var r2 = new Node;
+        r2.lerp(H,r3,t);
+        right.nodes.push(r2);
+
+
+        var l4 = new Node;
+        l4.lerp(l3,r2,t);
+        left.nodes.push(l4);
+        right.nodes.push(l4);
+
+
         // degree 3 bezier curve
     }
 
@@ -153,54 +217,132 @@ BezierCurve.prototype.deCasteljauSplit = function(t)
 // TODO: Task 2 - Implement the De Casteljau draw function.
 BezierCurve.prototype.deCasteljauDraw = function(depth)
 {
+    
+    if(depth==0){
+        this.drawControlPolygon();
+        return;
+    }
+    else{
+
+        var children = this.deCasteljauSplit(this.tParameter);
+        children.left.deCasteljauDraw(depth-1);
+        children.right.deCasteljauDraw(depth-1);
+
+    }
+
     // Check if depth == 0; if so draw the control polygon
     // Else get both children by split
     // recursively call draw on both children
 }
 
 // TODO: Task 3 - Implement the adaptive De Casteljau draw function
-BezierCurve.prototype.adapativeDeCasteljauDraw = function()
-{
+BezierCurve.prototype.adapativeDeCasteljauDraw = function(showSubEnds){
+
+    var th = 10;
     // NOTE: Only for graduate students
+    if(this.nodes.length == 3){
+        
+        x2x1 = this.nodes[1].x-this.nodes[0].x;
+        y2y1 = this.nodes[1].y-this.nodes[0].y;
+        x2x3 = this.nodes[1].x-this.nodes[2].x;
+        y2y3 = this.nodes[1].y-this.nodes[2].y;
+
+        d1 = Math.pow(Math.pow(x2x1,2) + Math.pow(y2y1,2),.5);
+        d2 = Math.pow(Math.pow(x2x3,2) + Math.pow(y2y3,2),.5);
+
+        if((d1>th)||(d2>th)){
+            if(showSubEnds){
+                setColors(this.ctx,'red');
+                this.nodes[0].draw(this.ctx);
+                this.nodes[2].draw(this.ctx);
+                setColors(this.ctx,'black');
+            }
+            var children = this.deCasteljauSplit(this.tParameter);
+            children.left.adapativeDeCasteljauDraw(showSubEnds);
+            children.right.adapativeDeCasteljauDraw(showSubEnds);
+
+        }
+        else{
+            this.drawControlPolygon();
+        }
+
+
+
+    }
+
+
+    if(this.nodes.length == 4){
+        
+        x2x1 = this.nodes[1].x-this.nodes[0].x;
+        y2y1 = this.nodes[1].y-this.nodes[0].y;
+        x4x3 = this.nodes[3].x-this.nodes[2].x;
+        y4y3 = this.nodes[3].y-this.nodes[2].y;
+
+        d1 = Math.pow(Math.pow(x2x1,2) + Math.pow(y2y1,2),.5);
+        d2 = Math.pow(Math.pow(x4x3,2) + Math.pow(y4y3,2),.5);
+
+        if((d1>th)||(d2>th)){
+            if(showSubEnds){
+                setColors(this.ctx,'red');
+                this.nodes[0].draw(this.ctx);
+                this.nodes[3].draw(this.ctx);
+                setColors(this.ctx,'black');
+
+            }
+            var children = this.deCasteljauSplit(this.tParameter);
+            children.left.adapativeDeCasteljauDraw(showSubEnds);
+            children.right.adapativeDeCasteljauDraw(showSubEnds);
+
+        }
+        else{
+            this.drawControlPolygon();
+        }
+
+    }
+
+
     // Compute a flatness measure.
     // If not flat, split and recurse on both
     // Else draw control vertices of the curve
 }
 
+
+
+
+
+
 // NOTE: Code for task 1
 BezierCurve.prototype.drawTask1 = function()
 {
-    this.ctx.clearRect(0, 0, this.dCanvas.width, this.dCanvas.height);
-    if(this.showControlPolygon)
-    {
-        // Connect nodes with a line
-        setColors(this.ctx,'rgb(10,70,160)');
-        this.drawControlPolygon();
 
-        // Draw control points
-        setColors(this.ctx,'rgb(10,70,160)','white');
-        this.drawControlPoints();
+    xcen = (this.dCanvas.width/2);
+    ycen = (this.dCanvas.height/2);
+    p1 = new Node(xcen + 100*Math.sin(0), ycen + 100*Math.cos(0));
+    p2 = new Node(xcen + 100*Math.sin(2*Math.PI/3), ycen + 100*Math.cos(2*Math.PI/3));
+    p3 = new Node(xcen + 100*Math.sin(4*Math.PI/3), ycen + 100*Math.cos(4*Math.PI/3));
+
+    this.nodes.push(p1);
+    this.nodes.push(p2);
+    this.nodes.push(p3);
+
+    this.helper();
+
+
+    this.ctx.clearRect(0, 0, this.dCanvas.width, this.dCanvas.height);
+    
+    this.drawControlPolygon();
+
+
+}
+
+BezierCurve.prototype.helper = function(){
+
+    var dir = 0;
+
+    for (var i = 0; i < this.nodes.length; i++) {
+
     }
-    
-    if (this.nodes.length < 3)
-        return;
-    
-    // De Casteljau split for one time
-    var split = this.deCasteljauSplit(this.tParameter);
-    setColors(this.ctx, 'red');
-    split.left.drawControlPolygon();
-    setColors(this.ctx, 'green');
-    split.right.drawControlPolygon();
-    
-    setColors(this.ctx,'red','red');
-    split.left.drawControlPoints();
-    setColors(this.ctx,'green','green');
-    split.right.drawControlPoints();
-    
-    // Draw the parameter value.
-    drawText(this.ctx, this.nodes[0].x - 20,
-                       this.nodes[0].y + 20,
-                         "t = " + this.tParameter);
+
 }
 
 // NOTE: Code for task 2
@@ -248,11 +390,14 @@ BezierCurve.prototype.drawTask3 = function()
     
     // De-casteljau's recursive evaluation
     setColors(this.ctx,'black');
-    this.deCasteljauDraw(this.tDepth);
+    //this.deCasteljauDraw(this.tDepth);
     
     // adaptive draw evaluation
-    if(this.showAdaptiveSubdivision)
-        this.adapativeDeCasteljauDraw();
+    if(this.showAdaptiveSubdivision){
+        this.adapativeDeCasteljauDraw(this.showSubEnds);
+    }
+    else
+        this.deCasteljauDraw(this.tDepth);
 }
 
 // Add a contro point to the Bezier curve

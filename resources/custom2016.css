@@ -6,7 +6,7 @@ body{
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 300;
 	padding-top: 0 !important;
-	background-color:#555A64;
+	background-color:#000000;
 /*	background-image: url(/images2014/bgcnbl.jpg);
 	background-size: cover;*/
 /*	background-repeat: no-repeat;
@@ -27,10 +27,14 @@ canvas {
     cursor: default;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
 }
+.button-group-container {
+    margin: 10px auto;
+}
 
 .canvas-container {
     margin: 40px auto;
     text-align: center;
+    background: black;
 }
 
 .slider-container {
@@ -84,7 +88,6 @@ canvas {
     text-align: right;
     font-size: small;
 }
-
 /*body.Contact, body.Faculty{
 	background-image: url(/images2014/bgcnb.jpg);
 	background-size: cover;
@@ -914,4 +917,46 @@ h3.newsarchive{
 }
 @media (min-width:1200px){
 	.container{width:1148px}
+}
+
+.button-group-horz>.button:first-child {
+    margin-left: 0;
+}
+.button-group-horz>.button-horz:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.button-group-horz>.button-horz:last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.button-group-horz>.button-horz:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+
+.button, .button-horz {
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.4;
+    
+    padding: 10px 13px;
+    border: none;
+    border-radius: 4px;
+    transition: border .25s linear, color .25s linear, background-color .25s linear;
+    cursor: pointer;
+    
+    color: #999;
+    background-color: #181818;
+}
+
+.button, .button-horz {
+    display: inline-block;
+}
+.button:hover, .button-horz:hover, .button-vert:hover, .button:focus, .button-horz:focus, .button-vert:focus {
+    color: #999;
+    background-color: #333;
+}
+.button.active, .button-horz.active {
+    color: #fff;
+    background-color: #1F8DD6;
 }

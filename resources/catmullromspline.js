@@ -65,6 +65,7 @@ CatmullRomSpline.prototype.setTension = function(val)
 CatmullRomSpline.prototype.setNumSegments = function(val)
 {
     this.numSegments = val;
+
 }
 
 // Event handlers.
@@ -132,6 +133,32 @@ CatmullRomSpline.prototype.drawControlPoints = function()
 // TODO: Task 4
 CatmullRomSpline.prototype.drawTangents = function()
 {
+    
+
+    for(var i = 1; i < this.nodes.length-1; i++){
+
+        var dy = this.nodes[i+1].y - this.nodes[i-1].y;
+        // if(dy<0)
+        //     dy = -dy;
+
+        var dx  = (this.nodes[i+1].x - this.nodes[i-1].x);
+        // if(dx<0)
+        //     dx = -dx;
+
+        var slope = dy/dx;
+
+        var normalized = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+
+
+
+
+        angle = Math.atan(slope);
+
+       // slope = 1/slope;
+        setColors(this.ctx,'red');
+        drawLine(this.ctx,this.nodes[i].x,this.nodes[i].y,(dx*50/normalized + this.nodes[i].x),(dy*50/normalized +this.nodes[i].y));
+        setColors(this.ctx,'blue');
+    }
     // Note: Tangents are available only for 2,..,n-1 nodes. The tangent is not defined for 1st and nth node.
     // Compute tangents from (i+1) and (i-1) node
     // Normalize tangent and compute a line of length 'x' pixels from the current control point.
@@ -141,6 +168,87 @@ CatmullRomSpline.prototype.drawTangents = function()
 // TODO: Task 5
 CatmullRomSpline.prototype.draw = function()
 {
+
+    //var k = this.numSegments;
+    var tn = this.tension;
+    var k = this.numSegments;
+    for(var i = 1; i < this.nodes.length-2; i++){
+
+
+        var p1 = this.nodes[i-1];
+        var p2 = this.nodes[i];
+        var p3 = this.nodes[i+1];
+        var p4 = this.nodes[i+2];
+        
+        
+        var pn = new Node;
+        pn = p2;
+        for(t=0; t<1+(1/k); t+=(1/k)){
+            var n = new Node();
+            n.x = ((-tn*p1.x + (2-tn)*p2.x +(tn-2)*p3.x + tn*p4.x)*t*t*t
+               + (2*tn*p1.x + (tn-3)*p2.x + (3-2*tn)*p3.x - tn*p4.x)*t*t
+               + (-tn*p1.x+tn*p3.x)*t
+               + p2.x);
+            n.y = ((-tn*p1.y + (2-tn)*p2.y +(tn-2)*p3.y + tn*p4.y)*t*t*t
+               + (2*tn*p1.y + (tn-3)*p2.y + (3-2*tn)*p3.y - tn*p4.y)*t*t
+               + (-tn*p1.y+tn*p3.y)*t
+               + p2.y);
+
+            setColors(this.ctx,'black');
+            drawLine(this.ctx,pn.x,pn.y,n.x,n.y);
+            setColors(this.ctx,'blue');
+
+            pn = n;
+        }
+
+       
+
+    }
+
+
+        // var curve = new BezierCurve(this.cId,this.ctx);
+
+        // var dy = this.nodes[i+1].y - this.nodes[i-1].y;
+        // var dx  = (this.nodes[i+1].x - this.nodes[i-1].x);
+        // var slope = dy/dx;
+        // var normalized = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+
+        
+
+        // angle = Math.atan(slope);
+
+        // var a = new Node;
+        // a.x = (dx*50/normalized + this.nodes[i].x);
+        // a.y = (dy*50/normalized +this.nodes[i].y);
+
+
+        // var dy = this.nodes[i+2].y - this.nodes[i].y;
+        // var dx  = (this.nodes[i+2].x - this.nodes[i].x);
+        // var slope = dy/dx;
+        // var normalized = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+
+        
+
+        // angle = Math.atan(slope);
+
+        // var b = new Node;
+        // b.x = (-dx*50/normalized + this.nodes[i+1].x);
+        // b.y = (-dy*50/normalized +this.nodes[i+1].y);
+
+        // curve.nodes.push(this.nodes[i]);
+        // curve.nodes.push(a); 
+        // curve.nodes.push(b);
+        // curve.nodes.push(this.nodes[i+1]);
+        // setColors(this.ctx,'black');
+
+        // curve.deCasteljauDraw(Math.floor(d/4));
+
+        // setColors(this.ctx,'blue');
+
+    //}
+
+    
+
     //NOTE: You can either implement the equal parameter split strategy or recursive bezier draw for drawing the spline segments
     //NOTE: If you're a grad student, you will have to employ the tension parameter to draw the curve (see assignment description for more details)
     //Hint: Once you've computed the segments of the curve, draw them using the drawLine() function

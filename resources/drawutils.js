@@ -6,8 +6,8 @@ CVSTATE = {
 };
 
 function setColors(ctx,stroke,fill) {
-    if(typeof(stroke)==='undefined') stroke = 'black';
-    if(typeof(fill)==='undefined') fill = 'blue';
+    if(typeof(stroke)==='undefined') stroke = 'white';
+    if(typeof(fill)==='undefined') fill = 'white';
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;
 }
@@ -16,6 +16,8 @@ function drawLine(ctx, px, py, qx, qy) {
     ctx.beginPath();
     ctx.moveTo(px, py);
     ctx.lineTo(qx, qy);
+    ctx.lineWidth = 2;
+    this.setColors(ctx,'white','white');
     ctx.stroke();
 }
 
@@ -38,7 +40,10 @@ function drawText(ctx,x,y,str) {
 function getMousePos(evt) {
     var rect = evt.target.getBoundingClientRect();
     return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
+        x:null,
+        y:null
+
+      // x: evt.clientX - rect.left,
+      // y: evt.clientY - rect.top
     };
 }

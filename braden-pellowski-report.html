@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Computer Graphics - Assignment 3</title>
+
+    <link href="resources/bootstrap.min.css" rel="stylesheet">
+    <link href="resources/custom2016.css" rel="stylesheet">
+    
+    <!-- Load all the scripts related to the assignment -->
+    <script src="resources/drawutils.js"></script>
+    <script src="resources/node.js"></script>
+    <script src="resources/beziercurve.js"></script>
+    <script src="resources/catmullromspline.js"></script>
+    <script src="resources/turtle.js"></script>
+    <script src="resources/glUtil.js"></script>
+    <script src="resources/uiUtil.js"></script>
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body onload="setupAssignment();">
+    <div class="container headerBar">
+        <h1>Programming Assignment 4 - Name Here</h1>
+    </div>
+    <div class="container contentWrapper">
+        <div class="pageContent">
+            <!-- ================================================================= -->
+
+            <h2>Task 1: Fractional Dimension Animator</h2>
+
+            <div class="canvas-container">
+                <div class="button-group-container"><div id="fractal-selector"></div></div>
+                <canvas id="task-1" width="820" height="461" style="margin: 0; border: 4px solid black;"></canvas>
+            </div>
+            <div class="slider-container"><div id="task1-order"></div></div>
+            <div class="slider-container"><div id="task1-length"></div></div>
+
+            
+            <!-- ================================================================= -->
+
+            <h2>Task 2</h2>
+            
+            <div class="canvas-container">
+                <div class="button-group-container"><div id="fractal-selector"></div></div>
+                <canvas id="task-2" width="820" height="461" style="margin: 0; border: 4px solid black;"></canvas>
+            </div>
+            <div class="slider-container"><div id="task2-order"></div></div>
+            <div class="slider-container"><div id="task2-length"></div></div>
+
+            
+            <!-- ================================================================= -->
+            
+            <h2>Task 3 (For Extra Credit)</h2>
+            
+            <p>I waited to complete this task until after I had finished the other assignments. The task made sense once I understood that in order to control flatness I had to compare line distances with a threshold.</p>
+            
+            <div class="canvas-container">
+                <canvas id="task-3" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+            </div>
+            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
+                <input type="checkbox" checked="true" onchange="task3Curve.setShowControlPolygon(this.checked);" id="task3CboxNodes1" /> Show control polygon
+                <input type="checkbox" checked="true" onchange="task3Curve.setShowAdaptiveSubdivision(this.checked);" id="task3CboxNodes2" /> Show adaptive subdivision
+                <input type="checkbox" checked="true" onchange="task3Curve.setShowSubEnds(this.checked);" id="task3CboxNodes3" /> Show subdivided endpoints
+                <button onclick="clearCurve(3);">Clear Canvas</button>
+            </div>
+
+            <!-- ================================================================= -->
+
+            
+        </div>
+    </div>
+    <script>
+    
+        
+        function setupAssignment() {
+            
+            // Set up the curves
+            
+
+
+
+            task1Fractal = new Turtle("task-1");
+            var fractals = ["Koch Curve", "Koch Snowflake", "Koch Square"];
+            new ButtonGroup("fractal-selector", fractals, function(idx) {
+            
+                task1Fractal.selectModel(idx);
+                
+                // draw(task1Curve);
+            });
+             new Slider("task1-order", 0, 7, 1, true, function(subd) {
+                this.setLabel("Order: " + subd);
+                task1Fractal.setT(subd);
+            });
+
+            new Slider("task1-length", 100, 700, 400, true, function(subd) {
+                this.setLabel("Length: " + subd);
+                task1Fractal.setL(subd);
+            });
+            // var canvas = document.getElementById("task-1");
+            // var ctx = canvas.getContext("2d");
+            // ctx.fillStyle = "black";
+            // ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            // Call the draw function
+            task1Fractal.draw();
+        }
+        
+        
+        window.requestAnimFrame = (function(callback) {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function(callback) {
+                window.setTimeout(callback, 1000 / 30);
+            };
+        })();
+        
+
+
+
+        
+    </script>
+</body>
+</html>
