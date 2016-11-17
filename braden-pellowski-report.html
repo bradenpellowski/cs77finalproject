@@ -12,11 +12,7 @@
     
     <!-- Load all the scripts related to the assignment -->
     <script src="resources/drawutils.js"></script>
-    <script src="resources/node.js"></script>
-    <script src="resources/beziercurve.js"></script>
-    <script src="resources/catmullromspline.js"></script>
     <script src="resources/turtle.js"></script>
-    <script src="resources/glUtil.js"></script>
     <script src="resources/uiUtil.js"></script>
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -46,31 +42,28 @@
             
             <!-- ================================================================= -->
 
-            <h2>Task 2</h2>
+            <h2>Task 2: User-Defined L-Systems</h2>
             
             <div class="canvas-container">
                 <div class="button-group-container"><div id="fractal-selector"></div></div>
                 <canvas id="task-2" width="820" height="461" style="margin: 0; border: 4px solid black;"></canvas>
             </div>
+
             <div class="slider-container"><div id="task2-order"></div></div>
             <div class="slider-container"><div id="task2-length"></div></div>
+            <div class="slider-container"><div id="task2-angle"></div></div>
+
+            Rule: F = <input type="text" id="rule" name="rule"> 
+            <button onclick="setRule();">Submit</button>
+
+            <br><br>
 
             
             <!-- ================================================================= -->
             
             <h2>Task 3 (For Extra Credit)</h2>
             
-            <p>I waited to complete this task until after I had finished the other assignments. The task made sense once I understood that in order to control flatness I had to compare line distances with a threshold.</p>
             
-            <div class="canvas-container">
-                <canvas id="task-3" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
-            </div>
-            <div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
-                <input type="checkbox" checked="true" onchange="task3Curve.setShowControlPolygon(this.checked);" id="task3CboxNodes1" /> Show control polygon
-                <input type="checkbox" checked="true" onchange="task3Curve.setShowAdaptiveSubdivision(this.checked);" id="task3CboxNodes2" /> Show adaptive subdivision
-                <input type="checkbox" checked="true" onchange="task3Curve.setShowSubEnds(this.checked);" id="task3CboxNodes3" /> Show subdivided endpoints
-                <button onclick="clearCurve(3);">Clear Canvas</button>
-            </div>
 
             <!-- ================================================================= -->
 
@@ -82,20 +75,17 @@
         
         function setupAssignment() {
             
-            // Set up the curves
-            
-
-
-
+            // Set up the fractals and L system
             task1Fractal = new Turtle("task-1");
+            task2Fractal = new Turtle("task-2");
+            task2Fractal.setLSystem();
+
             var fractals = ["Koch Curve", "Koch Snowflake", "Koch Square"];
             new ButtonGroup("fractal-selector", fractals, function(idx) {
-            
                 task1Fractal.selectModel(idx);
-                
-                // draw(task1Curve);
             });
-             new Slider("task1-order", 0, 7, 1, true, function(subd) {
+
+            new Slider("task1-order", 0, 7, 1, true, function(subd) {
                 this.setLabel("Order: " + subd);
                 task1Fractal.setT(subd);
             });
@@ -104,13 +94,31 @@
                 this.setLabel("Length: " + subd);
                 task1Fractal.setL(subd);
             });
-            // var canvas = document.getElementById("task-1");
-            // var ctx = canvas.getContext("2d");
-            // ctx.fillStyle = "black";
-            // ctx.fillRect(0,0,canvas.width,canvas.height);
-            
+
+            new Slider("task2-order", 0, 7, 0, true, function(subd) {
+                this.setLabel("Order: " + subd);
+                task2Fractal.setT(subd);
+            });
+
+            new Slider("task2-length", 20, 200, 50, true, function(subd) {
+                this.setLabel("Length: " + subd);
+                task2Fractal.setL(subd);
+            });
+
+            new Slider("task2-angle", 0, 90, 90, true, function(subd) {
+                this.setLabel("Angle: " + subd);
+                task2Fractal.setAngle(subd);
+            });
+
             // Call the draw function
             task1Fractal.draw();
+            //task2Fractal.draw();
+        }
+
+        function setRule(){
+            var str = document.getElementById("rule").value;
+            task2Fractal.setString(str);
+            task2Fractal.draw();
         }
         
         

@@ -1,9 +1,13 @@
 var Turtle = function(canvasId, ctx){
 	
+	this.string = "";
 	this.tParameter = 0;
 	this.lParameter = 100;
 	this.selectedModel = 0;
+	this.isLSystem = false;
+	this.numF = 0;
 
+	this.iter = 0;
     
     // Set up all the data related to drawing the curve
     this.cId = canvasId;
@@ -15,8 +19,12 @@ var Turtle = function(canvasId, ctx){
         this.ctx = this.dCanvas.getContext('2d');
     }
     this.computeCanvasSize();
-    
-    if(this.selectedModel==0){
+    this.countF();
+    if(this.isLSystem){
+		this.xorigin = (this.dCanvas.width/2) - (.5*this.numF*this.lParameter);
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
+	}
+    else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
 	    this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
@@ -44,7 +52,12 @@ var Turtle = function(canvasId, ctx){
 
 Turtle.prototype.selectModel = function(idx) {
     this.selectedModel = idx;
-    if(this.selectedModel==0){
+    this.countF();
+    if(this.isLSystem){
+		this.xorigin = (this.dCanvas.width/2) - (.5*this.numF*this.lParameter);
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
+	}
+    else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
 	    this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
@@ -72,7 +85,6 @@ Turtle.prototype.computeCanvasSize = function()
 
 Turtle.prototype.move = function(d){
 
-
 	var xn = this.x + d*Math.cos(this.a);
 	var yn = this.y + d*Math.sin(this.a);
 	
@@ -82,7 +94,6 @@ Turtle.prototype.move = function(d){
 
 	this.x = xn;
 	this.y = yn;
-
 
 	return(this);
 }
@@ -112,19 +123,29 @@ Turtle.prototype.setA = function(an){
 	return(this);
 }
 
+Turtle.prototype.setAngle = function(an){
+	
+	this.angle = an;
+	this.draw();
+}
+
 Turtle.prototype.draw = function(){
 	
+	this.setA(0);
+	this.x = this.xorigin;
+	this.y = this.yorigin;
 	this.ctx.clearRect(0, 0, this.dCanvas.width, this.dCanvas.height);
-	if(this.selectedModel==0){
+	if(this.isLSystem){
+		if(this.string != ""){
+			this.drawLSystem(this.tParameter,this.lParameter);
+		}
+	}else if(this.selectedModel==0){
 		this.drawKochCurve(this.tParameter,this.lParameter);
 	}else if (this.selectedModel == 1){
-		this.drawKochSnowflake(this.tParameter, this.lParameter/2);
-		this.setA(0);
+		this.drawKochSnowflake(this.tParameter, this.lParameter/2);;
 	}else{
 		this.drawKochSquare(this.tParameter,this.lParameter);
 	}
-	this.x = this.xorigin;
-	this.y = this.yorigin;
 
 }
 Turtle.prototype.drawKochCurve = function(i,length){
@@ -171,6 +192,13 @@ Turtle.prototype.drawKochSquare = function(i,length){
 
 }
 
+
+
+Turtle.prototype.setLSystem = function()
+{
+    this.isLSystem = true;
+}
+
 Turtle.prototype.setT = function(t)
 {
     this.tParameter = t;
@@ -179,7 +207,12 @@ Turtle.prototype.setT = function(t)
 Turtle.prototype.setL = function(l)
 {
     this.lParameter = l;
-    if(this.selectedModel==0){
+    this.countF();
+    if(this.isLSystem){
+		this.xorigin = (this.dCanvas.width/2) - (.5*this.numF*this.lParameter);
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
+	}
+    else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
 	    this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
@@ -191,5 +224,91 @@ Turtle.prototype.setL = function(l)
 		this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
     	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12) + 80;
 	}
+
 	this.draw();
+}
+
+Turtle.prototype.setString = function(s){
+	this.string = s;
+	console.log("counting F")
+	this.countF();
+	// console.log("numF");
+	console.log(this.numF);
+}
+
+Turtle.prototype.countF = function(){
+	this.numF=0;
+
+	// if(this.string.charAt(0)=="F"){
+	// 		this.numF = this.numF+1;
+	// }
+
+	console.log("length");
+	console.log(this.string.length);
+	for(var i = 0; i < this.string.length; i++){
+		if((this.string.charAt(i)=="F") && (this.a==0)){
+			console.log(this.string.charAt(i));
+			this.numF = this.numF+1;
+		}
+	}
+}
+
+Turtle.prototype.drawLSystem = function(i,length){
+	//console.log(this.iter);
+	//this.iter++;
+	if(i==0){
+		console.log("length");
+		console.log(length);
+		this.parse(0,length);
+	}else{
+		for(var j = 0; j < this.string.length; j++){
+			var l = this.string.charAt(j);
+
+			if(l=="F"){
+				// console.log("length");
+				// console.log(length);
+				// console.log("this.numF");
+				// console.log(this.numF);
+				this.drawLSystem(i-1,length/3)
+			}
+			else if(l=="+"){
+				this.right(this.angle);
+			}
+			else if(l=="-"){
+				this.left(this.angle);
+			}
+			else{
+				console.log("Error: Invalid Character");
+				return;
+			}
+		}
+		
+	}
+	return this;
+}
+
+
+
+Turtle.prototype.parse = function(ind, length){
+	
+	this.setL(length);
+	var l = this.string.charAt(ind);
+	if(l==null||l==""){
+		return;
+	}
+	else if(l=="F"){
+		this.move(length);
+	}
+	else if(l=="+"){
+		this.right(this.angle);
+	}
+	else if(l=="-"){
+		this.left(this.angle);
+	}
+	else{
+		console.log("Error: Invalid Character");
+		return;
+	}
+	this.parse(ind+1,length);
+	return;
 }
