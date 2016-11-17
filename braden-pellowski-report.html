@@ -58,6 +58,10 @@
 
             <br><br>
 
+            <button onclick="setRule1();">F = F[-F]F[+F]F </button>
+
+            <button onclick="setRule2();">F = FF-[-F+F+F]+[+F-F-F] </button>
+
             
             <!-- ================================================================= -->
             
@@ -95,17 +99,17 @@
                 task1Fractal.setL(subd);
             });
 
-            new Slider("task2-order", 0, 7, 0, true, function(subd) {
+            sliderorder2 = new Slider("task2-order", 0, 7, 0, true, function(subd) {
                 this.setLabel("Order: " + subd);
                 task2Fractal.setT(subd);
             });
 
-            new Slider("task2-length", 20, 200, 50, true, function(subd) {
+            sliderlength2 = new Slider("task2-length", 20, 200, 50, true, function(subd) {
                 this.setLabel("Length: " + subd);
                 task2Fractal.setL(subd);
             });
 
-            new Slider("task2-angle", 0, 90, 90, true, function(subd) {
+            sliderangle2 = new Slider("task2-angle", 0, 90, 90, true, function(subd) {
                 this.setLabel("Angle: " + subd);
                 task2Fractal.setAngle(subd);
             });
@@ -120,6 +124,32 @@
             task2Fractal.setString(str);
             task2Fractal.draw();
         }
+
+        function setRule1(){
+            var str = "F[-F]F[+F]F";
+            task2Fractal.setString(str);
+            task2Fractal.setAngle(45);
+            task2Fractal.setL(160)
+            task2Fractal.setT(6);
+            sliderorder2.setValue(6);
+            sliderlength2.setValue(160);
+            sliderangle2.setValue(45);
+            task2Fractal.draw();
+        }
+
+        function setRule2(){
+            var str = "FF-[-F+F+F]+[+F-F-F]";
+            task2Fractal.setString(str);
+            task2Fractal.setAngle(22.5);
+            task2Fractal.setL(160);
+            task2Fractal.setT(3);
+            sliderorder2.setValue(3);
+            sliderlength2.setValue(160);
+            sliderangle2.setValue(22.5);
+
+            task2Fractal.draw();
+        }
+
         
         
         window.requestAnimFrame = (function(callback) {

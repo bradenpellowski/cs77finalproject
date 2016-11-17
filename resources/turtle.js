@@ -22,7 +22,7 @@ var Turtle = function(canvasId, ctx){
     this.countF();
     if(this.isLSystem){
 		this.xorigin = (this.dCanvas.width/2);
-    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12) + 80;
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
     else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
@@ -48,13 +48,40 @@ var Turtle = function(canvasId, ctx){
     
 }
 
+Turtle.prototype.push = function(){
+
+	var map = {
+		x: this.x,
+		y: this.y,
+		xorigin: this.xorigin,
+		yorigin: this.yorigin,
+		pd: this.pd,
+		a: this.a
+	}
+	this.stack.push(map);
+	this.ctx.save();
+	return this;
+}
+
+Turtle.prototype.pop = function(){
+
+	var map = this.stack.pop();
+	this.x = map.x;
+	this.y = map.y;
+	this.xorigin = map.xorigin;
+	this.yorigin = map.yorigin;
+	this.pd = map.pd;
+	this.a = map.a;
+	this.ctx.restore();
+	return this;
+}
 
 Turtle.prototype.selectModel = function(idx) {
     this.selectedModel = idx;
     this.countF();
     if(this.isLSystem){
 		this.xorigin = (this.dCanvas.width/2);
-    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12) + 80;
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
     else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
@@ -228,7 +255,7 @@ Turtle.prototype.setL = function(l)
     this.countF();
     if(this.isLSystem){
 		this.xorigin = (this.dCanvas.width/2);
-    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12) + 80;
+    	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
 	}
     else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
@@ -260,8 +287,7 @@ Turtle.prototype.countF = function(){
 	// }
 
 	var turn = 0;
-	this.ls = 0;
-	this.rs = 0;
+	
 
 	for(var i = 0; i < this.string.length; i++){
 		var l = this.string.charAt(i);
@@ -296,6 +322,12 @@ Turtle.prototype.drawLSystem = function(i,length){
 			else if(l=="-"){
 				this.left(this.angle);
 			}
+			else if(l=="["){
+				this.push();
+			}
+			else if(l=="]"){
+				this.pop();
+			}
 			else{
 				console.log("Error: Invalid Character");
 				return;
@@ -323,6 +355,12 @@ Turtle.prototype.parse = function(ind, length){
 	}
 	else if(l=="-"){
 		this.left(this.angle);
+	}
+	else if(l=="["){
+		this.push();
+	}
+	else if(l=="]"){
+		this.pop();
 	}
 	else{
 		console.log("Error: Invalid Character");
