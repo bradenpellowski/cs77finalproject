@@ -11,9 +11,15 @@
     <link href="resources/custom2016.css" rel="stylesheet">
     
     <!-- Load all the scripts related to the assignment -->
+    <script src="resources/glUtil.js"></script>
+    <script src="resources/matrix.js"></script>
+    <script src="resources/mesh.js"></script>
     <script src="resources/drawutils.js"></script>
     <script src="resources/turtle.js"></script>
     <script src="resources/uiUtil.js"></script>
+    <script src="resources/terrain.js"></script>
+    <script src="resources/vector.js"></script>
+
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -24,13 +30,13 @@
 
 <body onload="setupAssignment();">
     <div class="container headerBar">
-        <h1>Programming Assignment 4 - Name Here</h1>
+        <h4>Final Project - CS77 - Fractal Animation - Braden Pellowski and Edrei Chua</h4>
     </div>
     <div class="container contentWrapper">
         <div class="pageContent">
             <!-- ================================================================= -->
 
-            <h2>Task 1: Fractional Dimension Animator</h2>
+            <h2>Component 1: Fractional Dimension Animator</h2>
 
             <div class="canvas-container">
                 <div class="button-group-container"><div id="fractal-selector"></div></div>
@@ -42,7 +48,7 @@
             
             <!-- ================================================================= -->
 
-            <h2>Task 2: User-Defined L-Systems</h2>
+            <h2>Component 2: User-Defined L-Systems</h2>
             
             <div class="canvas-container">
                 <div class="button-group-container"><div id="fractal-selector"></div></div>
@@ -53,21 +59,33 @@
             <div class="slider-container"><div id="task2-length"></div></div>
             <div class="slider-container"><div id="task2-angle"></div></div>
 
-            Rule: F = <input type="text" id="rule" name="rule"> 
+            User-Specified Rule: F = <input type="text" id="rule" name="rule"> 
             <button onclick="setRule();">Submit</button>
+            <button onclick="clearScreen();">Clear Screen</button>
 
             <br><br>
-
+            Preselected Rules: 
+            <button onclick="setRandom();">Random Rule! </button>
             <button onclick="setRule1();">F = F[-F]F[+F]F </button>
 
             <button onclick="setRule2();">F = FF-[-F+F+F]+[+F-F-F] </button>
 
+            <button onclick="setRule3();">F = F[+F]F[-F][F] </button>
+
+            <button onclick="setRule4();">F = F[++F][--F]F </button>
+
+            <button onclick="setRule5();">The Pellowski-Chua Spiral</button>
             
             <!-- ================================================================= -->
+                        <br><br><br>
+
+            <h2>Component 3: Terrain Generation</h2>
             
-            <h2>Task 3 (For Extra Credit)</h2>
-            
-            
+            <div class="canvas-container">
+                <div class="button-group-container"><div id="patch-selector"></div></div>
+                <canvas id="task-3" width="820" height="461"></canvas>
+            </div>
+            <div class="slider-container"><div id="task3-order"></div></div>
 
             <!-- ================================================================= -->
 
@@ -79,9 +97,12 @@
         
         function setupAssignment() {
             
+
             // Set up the fractals and L system
             task1Fractal = new Turtle("task-1");
             task2Fractal = new Turtle("task-2");
+            task3Fractal = setupTask("task-3", Terrain);
+
             task2Fractal.setLSystem();
 
             var fractals = ["Koch Curve", "Koch Snowflake", "Koch Square"];
@@ -99,12 +120,17 @@
                 task1Fractal.setL(subd);
             });
 
+            new Slider("task3-order", 0, 7, 2, true, function(subd) {
+                this.setLabel("Order: " + Math.pow(2,subd));
+                task3Fractal.setOrder(Math.pow(2,subd));
+            });
+
             sliderorder2 = new Slider("task2-order", 0, 7, 0, true, function(subd) {
                 this.setLabel("Order: " + subd);
                 task2Fractal.setT(subd);
             });
 
-            sliderlength2 = new Slider("task2-length", 20, 200, 50, true, function(subd) {
+            sliderlength2 = new Slider("task2-length", 20, 2000, 50, true, function(subd) {
                 this.setLabel("Length: " + subd);
                 task2Fractal.setL(subd);
             });
@@ -114,11 +140,17 @@
                 task2Fractal.setAngle(subd);
             });
 
+            this.setRule1();
             // Call the draw function
             task1Fractal.draw();
             task2Fractal.draw();
         }
 
+        function clearScreen(){
+            document.getElementById("rule").value = "";
+            task2Fractal.setString("");
+            task2Fractal.draw();
+        }
         function setRule(){
             var str = document.getElementById("rule").value;
             task2Fractal.setString(str);
@@ -126,7 +158,9 @@
         }
 
         function setRule1(){
+
             var str = "F[-F]F[+F]F";
+            document.getElementById("rule").value = str;
             task2Fractal.setString(str);
             task2Fractal.setAngle(45);
             task2Fractal.setL(160)
@@ -139,13 +173,128 @@
 
         function setRule2(){
             var str = "FF-[-F+F+F]+[+F-F-F]";
+            document.getElementById("rule").value = str;
             task2Fractal.setString(str);
             task2Fractal.setAngle(22.5);
-            task2Fractal.setL(160);
+            task2Fractal.setL(260);
             task2Fractal.setT(3);
             sliderorder2.setValue(3);
-            sliderlength2.setValue(160);
+            sliderlength2.setValue(260);
             sliderangle2.setValue(22.5);
+
+            task2Fractal.draw();
+        }
+
+        function setRule3(){
+            var str = "F[+F]F[-F][F]";
+            document.getElementById("rule").value = str;
+            task2Fractal.setString(str);
+            task2Fractal.setAngle(20);
+            task2Fractal.setL(700);
+            task2Fractal.setT(4);
+            sliderorder2.setValue(4);
+            sliderlength2.setValue(700);
+            sliderangle2.setValue(20);
+
+            task2Fractal.draw();
+        }
+
+        function setRule4(){
+            var str = "F[++F][--F]F";
+            document.getElementById("rule").value = str;
+            task2Fractal.setString(str);
+            task2Fractal.setAngle(60);
+            task2Fractal.setL(540);
+            task2Fractal.setT(4);
+            sliderorder2.setValue(4);
+            sliderlength2.setValue(540);
+            sliderangle2.setValue(60);
+
+            task2Fractal.draw();
+        }
+        
+        function setRule5(){
+            var str = "-F-+F[FFF]FFF";
+            document.getElementById("rule").value = "Secret";
+            task2Fractal.setString(str);
+            task2Fractal.setAngle(48);
+            task2Fractal.setL(664);
+            task2Fractal.setT(4);
+            sliderorder2.setValue(4);
+            sliderlength2.setValue(664);
+            sliderangle2.setValue(48);
+
+            task2Fractal.draw();
+        }
+
+        
+
+
+        function setRandom(){
+
+
+            
+
+            var paralength = Math.round(Math.random()*5);
+
+            var slength = Math.round(Math.random()*20) + paralength*2;
+
+            var str = "";
+            for(var i=0; i<slength; i++){
+                str = str+"*";
+            }
+
+
+
+            var array = [...str];
+            var i = 0;
+            while(i < paralength){
+
+                var r1 = Math.round(Math.random()*slength);
+                var r2 = Math.round(Math.random()*slength);
+                var small = Math.min(r1,r2);
+                var big = Math.max(r1,r2);
+
+                if(array[small] == '*' && array[big] == '*' && (big - small > 1)){
+                    array[small] = '[';
+                    array[big] = ']';
+                    i++;
+                }
+
+            }
+
+
+
+            for(var i = 0; i < slength; i++){
+                var r = Math.round(Math.random()*4);
+                if(array[i]=='*'){
+                    if(r==0)
+                        array[i] = "+";
+                    else if(r==1)
+                        array[i] = "-";
+                    else 
+                        array[i] = "F";
+                }
+            }
+
+
+
+
+
+            str = array.join("");
+            console.log("str");
+            console.log(str);
+            document.getElementById("rule").value = str;
+            task2Fractal.setString(str);
+            var an = Math.round(Math.random()*90);
+            var ln = Math.round(Math.random()*1000);
+            var tn = Math.round(Math.random()*5);
+            task2Fractal.setAngle(an);
+            task2Fractal.setL(ln);
+            task2Fractal.setT(tn);
+            sliderorder2.setValue(tn);
+            sliderlength2.setValue(ln);
+            sliderangle2.setValue(an);
 
             task2Fractal.draw();
         }

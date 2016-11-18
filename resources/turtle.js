@@ -23,6 +23,7 @@ var Turtle = function(canvasId, ctx){
     if(this.isLSystem){
 		this.xorigin = (this.dCanvas.width/2);
     	this.yorigin = (this.dCanvas.height/2) + (this.lParameter/12);
+
 	}
     else if(this.selectedModel==0){
 	    this.xorigin = (this.dCanvas.width/2) - (.5*this.lParameter);
@@ -174,10 +175,8 @@ Turtle.prototype.draw = function(){
 	if(this.isLSystem){
 		if(this.string != ""){
 			this.pd = false;
+			this.xf = 0;
 			this.drawLSystem(this.tParameter,this.lParameter);
-			this.xf = this.x;
-			console.log("xf");
-			console.log(this.xf);
 			this.pd = true;
 			var dist = (this.xf - this.xorigin)/2;
 			this.x= this.xorigin - dist;
@@ -305,6 +304,8 @@ Turtle.prototype.countF = function(){
 
 Turtle.prototype.drawLSystem = function(i,length){
 	
+	this.xf = Math.max(this.xf,this.x);
+
 	if(i==0){
 		
 		this.parse(0,length);
@@ -344,6 +345,8 @@ Turtle.prototype.drawLSystem = function(i,length){
 Turtle.prototype.parse = function(ind, length){
 	
 	var l = this.string.charAt(ind);
+	this.xf = Math.max(this.xf,this.x);
+
 	if(l==null||l==""){
 		return;
 	}
