@@ -136,7 +136,7 @@ var TriangleMesh = function(gl, vertexPositions, indices, edgeIndices) {
 TriangleMesh.prototype.render = function(gl, model, view, projection, drawFaces, drawWireframe, wireColor) {
     drawFaces = defaultArg(drawFaces, true);
     drawWireframe = defaultArg(drawWireframe, true);
-    wireColor = defaultArg(wireColor, new Vector(0, 0, 0));
+    wireColor = defaultArg(wireColor, new Vector(0,0,0));
 
     var modelViewProjection = projection.multiply(view).multiply(model);
     
@@ -149,13 +149,13 @@ TriangleMesh.prototype.render = function(gl, model, view, projection, drawFaces,
     
     if (drawFaces) {
         gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderProgram, "ModelViewProjection"), false, modelViewProjection.transpose().m); 
-        gl.uniform4f(gl.getUniformLocation(this.shaderProgram, "Color"), 0.95, 0.95, 0.95, 1); 
+        gl.uniform4f(gl.getUniformLocation(this.shaderProgram, "Color"), 0, 100, 0, 1); 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexIbo);
         gl.drawElements(gl.TRIANGLES, this.indexCount, gl.UNSIGNED_SHORT, 0);
     }
     
     if (drawWireframe) {
-        gl.lineWidth(2.0);
+        gl.lineWidth(.01);
         
         modelViewProjection = Matrix.translate(0, 0, -1e-4).multiply(modelViewProjection);
         gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderProgram, "ModelViewProjection"), false, modelViewProjection.transpose().m); 

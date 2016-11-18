@@ -244,7 +244,25 @@ Turtle.prototype.setLSystem = function()
 }
 
 Turtle.prototype.setT = function(t)
-{
+{	
+
+	if(t==0)
+		setColors(this.ctx,'white','white');
+	else if(t==1)
+		setColors(this.ctx,'red','red');
+	else if(t==2)
+		setColors(this.ctx,'orange','orange');
+	else if(t==3)
+		setColors(this.ctx,'yellow','yellow');
+	else if(t==4)
+		setColors(this.ctx,'green','green');
+	else if(t==5)
+		setColors(this.ctx,'blue','blue');
+	else if(t==6)
+		setColors(this.ctx,'purple','purple');
+	else if(t==7)
+		setColors(this.ctx,'pink','pink');
+
     this.tParameter = t;
     this.draw();
 }

@@ -30,16 +30,16 @@
 
 <body onload="setupAssignment();">
     <div class="container headerBar">
-        <h4>Final Project - CS77 - Fractal Animation - Braden Pellowski and Edrei Chua</h4>
+        <h1>CS77 Final Project: Fractals - Braden Pellowski and Edrei Chua</h1>
     </div>
     <div class="container contentWrapper">
         <div class="pageContent">
             <!-- ================================================================= -->
 
             <h2>Component 1: Fractional Dimension Animator</h2>
+                <center><div class="button-group-container"><div id="fractal-selector"></center>
 
             <div class="canvas-container">
-                <div class="button-group-container"><div id="fractal-selector"></div></div>
                 <canvas id="task-1" width="820" height="461" style="margin: 0; border: 4px solid black;"></canvas>
             </div>
             <div class="slider-container"><div id="task1-order"></div></div>
@@ -79,13 +79,17 @@
             <!-- ================================================================= -->
                         <br><br><br>
 
-            <h2>Component 3: Terrain Generation</h2>
+            <h2>Component 3: Diamond-Square Terrain Generation</h2>
             
             <div class="canvas-container">
                 <div class="button-group-container"><div id="patch-selector"></div></div>
                 <canvas id="task-3" width="820" height="461"></canvas>
             </div>
             <div class="slider-container"><div id="task3-order"></div></div>
+            <div class="slider-container"><div id="task3-c1"></div></div>
+            <div class="slider-container"><div id="task3-c2"></div></div>
+            <div class="slider-container"><div id="task3-c3"></div></div>
+            <div class="slider-container"><div id="task3-c4"></div></div>
 
             <!-- ================================================================= -->
 
@@ -110,17 +114,17 @@
                 task1Fractal.selectModel(idx);
             });
 
-            new Slider("task1-order", 0, 7, 1, true, function(subd) {
+            new Slider("task1-order", 0, 7, 0, true, function(subd) {
                 this.setLabel("Order: " + subd);
                 task1Fractal.setT(subd);
             });
 
-            new Slider("task1-length", 100, 700, 400, true, function(subd) {
+            new Slider("task1-length", 100, 1400, 700, true, function(subd) {
                 this.setLabel("Length: " + subd);
                 task1Fractal.setL(subd);
             });
 
-            new Slider("task3-order", 0, 7, 2, true, function(subd) {
+            new Slider("task3-order", 0, 7, 4, true, function(subd) {
                 this.setLabel("Order: " + Math.pow(2,subd));
                 task3Fractal.setOrder(Math.pow(2,subd));
             });
@@ -140,6 +144,27 @@
                 task2Fractal.setAngle(subd);
             });
 
+
+
+            corner1 = new Slider("task3-c1", -10, 10, 0, true, function(subd) {
+                this.setLabel("Corner 1: " + 1.5*subd/10);
+                task3Fractal.setc(1.5*subd/10,1);
+            });
+
+
+            corner2 = new Slider("task3-c2", -10, 10, 0, true, function(subd) {
+                this.setLabel("Corner 2: " + 1.5*subd/10);
+                task3Fractal.setc(1.5*subd/10,2);
+            });
+            corner3 = new Slider("task3-c3", -10, 10, 0, true, function(subd) {
+                this.setLabel("Corner 3: " + 1.5*subd/10);
+                task3Fractal.setc(1.5*subd/10,3);
+            });
+            corner4 = new Slider("task3-c4", -10, 10, 0, true, function(subd) {
+                this.setLabel("Corner 4: " + 1.5*subd/10);
+                task3Fractal.setc(1.5*subd/10,4);
+            });
+            
             this.setRule1();
             // Call the draw function
             task1Fractal.draw();
@@ -177,8 +202,8 @@
             task2Fractal.setString(str);
             task2Fractal.setAngle(22.5);
             task2Fractal.setL(260);
-            task2Fractal.setT(3);
-            sliderorder2.setValue(3);
+            task2Fractal.setT(2);
+            sliderorder2.setValue(2);
             sliderlength2.setValue(260);
             sliderangle2.setValue(22.5);
 

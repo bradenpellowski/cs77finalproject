@@ -4,6 +4,12 @@ var Terrain = function(gl){
     this.yaw = 0;
     this.gl = gl;
     this.order = 1;
+
+    this.c1 = 0;
+    this.c2 = 0;
+    this.c3 = 0;
+    this.c4 = 0;
+
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     this.terrainPatch = this.buildTerrain();
@@ -25,10 +31,10 @@ Terrain.prototype.buildTerrain = function() {
         this.heights.push(0);
     }
 
-    this.heights[0] = 1;
-    this.heights[this.order] = 1;
-    this.heights[(this.order+1)*this.order] = 1;
-    this.heights[(this.order+1)*(this.order+1) - 1] = 1;
+    this.heights[0] = this.c1;
+    this.heights[this.order]= this.c2
+    this.heights[(this.order+1)*this.order] = this.c3;
+    this.heights[(this.order+1)*(this.order+1) - 1] = this.c4;
 
     this.computeDS(0,this.order,(this.order+1)*this.order,(this.order+1)*(this.order+1) - 1,this.order);
 
@@ -88,30 +94,30 @@ Terrain.prototype.computeDS = function(a,b,c,d,order){
     var midRow = (rowA + rowC)/2;
     var middle = midRow*numCol + midCol;
 
-    this.heights[middle] = ((this.heights[a] + this.heights[b] + this.heights[c] + this.heights[d])/4);//+ (Math.random()-.5)*order/this.order;
+    this.heights[middle] = ((this.heights[a] + this.heights[b] + this.heights[c] + this.heights[d])/4)+ (Math.random()-.5)*order/this.order;
     //left
     var leftCol = colA;
     var leftRow = midRow;
     var left = leftRow*numCol + leftCol;
     
-    this.heights[left] = (this.heights[a]+this.heights[c])/2;// +(Math.random()-.5)*order/this.order;
+    this.heights[left] = (this.heights[a]+this.heights[c])/2 +(Math.random()-.5)*order/this.order;
     //top
     var topCol = midCol;
     var topRow = rowA;
     var top = topRow*numCol + topCol;
     
-    this.heights[top] = (this.heights[a]+this.heights[b])/2;// + (Math.random()-.5)*order/this.order;
+    this.heights[top] = (this.heights[a]+this.heights[b])/2 + (Math.random()-.5)*order/this.order;
     //right
     var rightCol = colD;
     var rightRow = midRow;
     var right = rightRow*numCol + rightCol;
        
-    this.heights[right] = (this.heights[b] + this.heights[d])/2;// + (Math.random()-.5)*order/this.order;
+    this.heights[right] = (this.heights[b] + this.heights[d])/2 + (Math.random()-.5)*order/this.order;
     //bottom
     var bottomCol = midCol;
     var bottomRow = rowD;
     var bottom = bottomRow*numCol + bottomCol;
-    this.heights[bottom] = (this.heights[c] + this.heights[d])/2;// + (Math.random()-.5)*order/this.order;
+    this.heights[bottom] = (this.heights[c] + this.heights[d])/2 + (Math.random()-.5)*order/this.order;
 
     this.computeDS(a,top,left,middle,order/2);
     this.computeDS(top,b,middle,right,order/2);
@@ -150,3 +156,16 @@ Terrain.prototype.setOrder = function(t){
 
 }
 
+Terrain.prototype.setc = function(val,c){
+    if(c==1)
+        this.c1 = val;
+    else if(c==2)
+        this.c2 = val;
+    else if(c==3)
+        this.c3 = val;
+    else
+        this.c4 = val;
+
+    this.terrainPatch = this.buildTerrain();
+    this.mesh = new Mesh(this.terrainPatch['vertices'], this.terrainPatch['faces'], false).toTriangleMesh(this.gl);
+}

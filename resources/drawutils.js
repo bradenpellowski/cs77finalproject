@@ -17,7 +17,6 @@ function drawLine(ctx, px, py, qx, qy) {
     ctx.moveTo(px, py);
     ctx.lineTo(qx, qy);
     ctx.lineWidth = 2;
-    this.setColors(ctx,'white','white');
     ctx.stroke();
 }
 
