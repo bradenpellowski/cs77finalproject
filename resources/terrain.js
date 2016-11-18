@@ -5,6 +5,8 @@ var Terrain = function(gl){
     this.gl = gl;
     this.order = 1;
 
+    this.randScale = 1;
+
     this.c1 = 0;
     this.c2 = 0;
     this.c3 = 0;
@@ -94,30 +96,30 @@ Terrain.prototype.computeDS = function(a,b,c,d,order){
     var midRow = (rowA + rowC)/2;
     var middle = midRow*numCol + midCol;
 
-    this.heights[middle] = ((this.heights[a] + this.heights[b] + this.heights[c] + this.heights[d])/4)+ (Math.random()-.5)*order/this.order;
+    this.heights[middle] = ((this.heights[a] + this.heights[b] + this.heights[c] + this.heights[d])/4)+ (Math.random()-.5)*(order/this.order)*this.randScale;
     //left
     var leftCol = colA;
     var leftRow = midRow;
     var left = leftRow*numCol + leftCol;
     
-    this.heights[left] = (this.heights[a]+this.heights[c])/2 +(Math.random()-.5)*order/this.order;
+    this.heights[left] = (this.heights[a]+this.heights[c])/2 +(Math.random()-.5)*(order/this.order)*this.randScale;
     //top
     var topCol = midCol;
     var topRow = rowA;
     var top = topRow*numCol + topCol;
     
-    this.heights[top] = (this.heights[a]+this.heights[b])/2 + (Math.random()-.5)*order/this.order;
+    this.heights[top] = (this.heights[a]+this.heights[b])/2 + (Math.random()-.5)*(order/this.order)*this.randScale;
     //right
     var rightCol = colD;
     var rightRow = midRow;
     var right = rightRow*numCol + rightCol;
        
-    this.heights[right] = (this.heights[b] + this.heights[d])/2 + (Math.random()-.5)*order/this.order;
+    this.heights[right] = (this.heights[b] + this.heights[d])/2 + (Math.random()-.5)*(order/this.order)*this.randScale;
     //bottom
     var bottomCol = midCol;
     var bottomRow = rowD;
     var bottom = bottomRow*numCol + bottomCol;
-    this.heights[bottom] = (this.heights[c] + this.heights[d])/2 + (Math.random()-.5)*order/this.order;
+    this.heights[bottom] = (this.heights[c] + this.heights[d])/2 + (Math.random()-.5)*(order/this.order)*this.randScale;
 
     this.computeDS(a,top,left,middle,order/2);
     this.computeDS(top,b,middle,right,order/2);
@@ -168,4 +170,12 @@ Terrain.prototype.setc = function(val,c){
 
     this.terrainPatch = this.buildTerrain();
     this.mesh = new Mesh(this.terrainPatch['vertices'], this.terrainPatch['faces'], false).toTriangleMesh(this.gl);
+}
+
+Terrain.prototype.setRandScale = function(val){
+
+    this.randScale = val;
+    this.terrainPatch = this.buildTerrain();
+    this.mesh = new Mesh(this.terrainPatch['vertices'], this.terrainPatch['faces'], false).toTriangleMesh(this.gl);
+
 }

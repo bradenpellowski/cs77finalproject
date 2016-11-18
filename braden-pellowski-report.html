@@ -90,6 +90,7 @@
             <div class="slider-container"><div id="task3-c2"></div></div>
             <div class="slider-container"><div id="task3-c3"></div></div>
             <div class="slider-container"><div id="task3-c4"></div></div>
+            <div class="slider-container"><div id="task3-rs"></div></div>
 
             <!-- ================================================================= -->
 
@@ -163,6 +164,11 @@
             corner4 = new Slider("task3-c4", -10, 10, 0, true, function(subd) {
                 this.setLabel("Corner 4: " + 1.5*subd/10);
                 task3Fractal.setc(1.5*subd/10,4);
+            });
+
+            randScale = new Slider("task3-rs", 1, 10, 5, true, function(subd) {
+                this.setLabel("Random Displacement Factor: " + subd);
+                task3Fractal.setRandScale(3*subd/10);
             });
             
             this.setRule1();
